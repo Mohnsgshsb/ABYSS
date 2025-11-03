@@ -1,15 +1,19 @@
-FROM node:18
+FROM node:lts-buster
 
-ENV NODE_ENV=production
+RUN apt-get update && \
+apt-get install -y \
+ffmpeg \
+imagemagick \
+webp && \
+apt-get upgrade -y && \
+rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
+COPY package.json .
 
-COPY ["package.json", "package-lock.json*", "./"]
-
-RUN npm install --production
+RUN npm install && npm install qrcode-terminal
 
 COPY . .
 
-EXPOSE 8080
+EXPOSE 8000
 
-CMD [ "node", "index.js" ]
+CMD ["node", "index.js"]
